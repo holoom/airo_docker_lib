@@ -2,7 +2,6 @@ FROM pattylo/airo_ros_noetic:gpu-nopkg
 ENV DEBIAN_FRONTEND=noninteractive
 ARG HOME=/root
 
-
 # bluerov2
 
 RUN sudo add-apt-repository ppa:deadsnakes/ppa
@@ -42,15 +41,18 @@ RUN cd ~/catkin_ws/src && \
     git submodule update --init --recursive 
 
 # REALSENSE
+RUN sudo apt-get update && sudo apt-get install -y software-properties-common
 RUN sudo mkdir -p /etc/apt/keyrings
 RUN curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | sudo tee /etc/apt/keyrings/librealsense.pgp > /dev/null
-RUN echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo `lsb_release -cs` main" | \
+RUN echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" | \
     sudo tee /etc/apt/sources.list.d/librealsense.list
+RUN echo 'Acquire::http::Timeout "120";' >> /etc/apt/apt.conf.d/99timeout
 RUN sudo apt-get update && \
     sudo apt-get install librealsense2-dkms -y && \
     sudo apt-get install librealsense2-utils -y && \
     sudo apt-get install librealsense2-dev -y && \
     sudo apt-get install librealsense2-dbg -y 
+    
 
 # RUN mkdir -p ~/camera_ws/src && cd ~/camera_ws/src/ && \
 #     git clone https://github.com/IntelRealSense/realsense-ros.git && \
@@ -78,7 +80,8 @@ RUN export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"/root/acados/lib" && \
 
 RUN sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen && \
     /bin/bash -c '. /opt/ros/noetic/setup.bash; cd ~/catkin_ws/;\
-    catkin_make'
+    catkin_make -j4'
+
 
 RUN echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 

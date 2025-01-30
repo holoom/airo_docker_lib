@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # build container
 echo "RUN YOUR OWN IMAGE"
@@ -44,13 +43,6 @@ sudo docker run \
   $gpu_enabled \
   --volume=$XSOCK:$XSOCK:rw \
   --volume=$XAUTH:$XAUTH:rw \
-  --volume=plotjuggler_dir:/opt \
-  --volume=/home/aosaad/bluerov2_mpc:/root/catkin_ws/src/bluerov2/bluerov2_mpc \
-  --volume=/home/aosaad/llm_ws/src/llm_planner:/root/catkin_ws/src/bluerov2/llm_planner \
-  --volume=/home/aosaad/otter_usv:/root/catkin_ws/src/otter_usv\
-  --volume=/home/aosaad/shark_dynamical_model/src/shark_dynamical_model:/root/shark_dynamical_model\
-  --volume=vscode-server:/root/.vscode-server \
-  --volume=uuvsimulator:/root/catkin_ws/src/uuv_simulator \
   --env="XAUTHORITY=${XAUTH}" \
   --env DISPLAY=$DISPLAY \
   --env TERM=xterm-256color \
